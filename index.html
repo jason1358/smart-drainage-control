@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스마트 배수 우수 제어</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --border:    #2a2d3e;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --accent:    #3b82f6;
+      --green:     #22c55e;
+      --yellow:    #eab308;
+      --red:       #ef4444;
+      --radius:    12px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    header h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Card ────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      width: 100%;
+      max-width: 540px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── Status pill ─────────────────────────────────── */
+    #statusPill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: rgba(239,68,68,.12);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,.3);
+      transition: all .3s;
+    }
+    #statusPill.connected {
+      background: rgba(34,197,94,.12);
+      color: var(--green);
+      border-color: rgba(34,197,94,.3);
+    }
+    #statusPill .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: none;
+    }
+    #statusPill.connected .dot { animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .4; }
+    }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s, transform .1s, box-shadow .2s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:not(:disabled):hover { box-shadow: 0 0 0 3px rgba(59,130,246,.3); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:not(:disabled):hover { border-color: var(--muted); }
+
+    .conn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Rain control buttons ────────────────────────── */
+    .rain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .rain-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px 12px;
+      border-radius: var(--radius);
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .rain-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .rain-btn:not(:disabled):hover { transform: translateY(-2px); }
+    .rain-btn:not(:disabled):active { transform: scale(.97); }
+
+    .rain-btn .icon { font-size: 2.2rem; line-height: 1; }
+    .rain-btn .label { font-size: 0.95rem; }
+    .rain-btn .sub   { font-size: 0.72rem; font-weight: 400; opacity: .75; }
+
+    .rain-btn.btn-0 {
+      background: rgba(34,197,94,.1);
+      border-color: rgba(34,197,94,.35);
+      color: var(--green);
+    }
+    .rain-btn.btn-0:not(:disabled):hover { background: rgba(34,197,94,.18); box-shadow: 0 0 16px rgba(34,197,94,.2); }
+
+    .rain-btn.btn-1 {
+      background: rgba(234,179,8,.1);
+      border-color: rgba(234,179,8,.35);
+      color: var(--yellow);
+    }
+    .rain-btn.btn-1:not(:disabled):hover { background: rgba(234,179,8,.18); box-shadow: 0 0 16px rgba(234,179,8,.2); }
+
+    .rain-btn.btn-2 {
+      background: rgba(59,130,246,.1);
+      border-color: rgba(59,130,246,.35);
+      color: #60a5fa;
+    }
+    .rain-btn.btn-2:not(:disabled):hover { background: rgba(59,130,246,.18); box-shadow: 0 0 16px rgba(59,130,246,.2); }
+
+    .rain-btn.active-flash {
+      animation: btnFlash .35s ease;
+    }
+    @keyframes btnFlash {
+      0%   { filter: brightness(1); }
+      40%  { filter: brightness(1.7); }
+      100% { filter: brightness(1); }
+    }
+
+    /* ── Info display ────────────────────────────────── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .info-item {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .info-item .val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .info-item .lbl {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    #txStatus { color: var(--green); }
+    #txStatus.error { color: var(--red); }
+
+    /* ── Log panel ───────────────────────────────────── */
+    #logPanel {
+      list-style: none;
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 0.78rem;
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: var(--muted);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    #logPanel li {
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      display: flex;
+      gap: 10px;
+    }
+    #logPanel li .ts  { color: #475569; min-width: 80px; }
+    #logPanel li .msg { color: #94a3b8; }
+    #logPanel li.ok  .msg { color: #86efac; }
+    #logPanel li.err .msg { color: #fca5a5; }
+
+    /* ── Error banner ────────────────────────────────── */
+    #errorBanner {
+      display: none;
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(239,68,68,.35);
+      color: #fca5a5;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 540px;
+    }
+    #errorBanner.show { display: block; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #334155;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>스마트 배수 우수 제어 시스템</h1>
+    <p>HC-05 블루투스 · Web Serial API · 9600 baud</p>
+  </header>
+
+  <div id="errorBanner"></div>
+
+  <!-- Connection card -->
+  <div class="card">
+    <div class="card-title">연결 상태</div>
+    <div class="conn-row">
+      <span id="statusPill"><span class="dot"></span><span id="statusText">연결 안 됨</span></span>
+      <button id="btnConnect"    class="btn btn-primary">HC-05 연결</button>
+      <button id="btnDisconnect" class="btn btn-outline" disabled>연결 해제</button>
+    </div>
+  </div>
+
+  <!-- Rain control card -->
+  <div class="card">
+    <div class="card-title">우수 제어</div>
+    <div class="rain-grid">
+      <button class="rain-btn btn-0" data-cmd="0" disabled>
+        <span class="icon">☀️</span>
+        <span class="label">비 없음</span>
+        <span class="sub">닫힘 (0°)</span>
+      </button>
+      <button class="rain-btn btn-1" data-cmd="1" disabled>
+        <span class="icon">🌦️</span>
+        <span class="label">약한 비</span>
+        <span class="sub">45° 개방</span>
+      </button>
+      <button class="rain-btn btn-2" data-cmd="2" disabled>
+        <span class="icon">⛈️</span>
+        <span class="label">강한 비</span>
+        <span class="sub">90° 개방</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Status display card -->
+  <div class="card">
+    <div class="card-title">전송 상태</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="val" id="lastSignal">—</div>
+        <div class="lbl">마지막 신호</div>
+      </div>
+      <div class="info-item">
+        <div class="val" id="servoAngle">—</div>
+        <div class="lbl">서보 각도</div>
+      </div>
+      <div class="info-item">
+        <div class="val" id="txStatus">—</div>
+        <div class="lbl">전송 결과</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log panel card -->
+  <div class="card">
+    <div class="card-title">명령 로그</div>
+    <ul id="logPanel"></ul>
+  </div>
+
+  <footer>Chrome 89 이상 필요 · HTTPS 또는 localhost · HC-05 블루투스 페어링 먼저 완료할 것</footer>
+
+<script>
+  /* ── State ─────────────────────────────────────────── */
+  let port   = null;
+  let writer = null;
+
+  const COMMANDS = {
+    '0': { label: '"0" — 비 없음',  angle: '0°  (닫힘)' },
+    '1': { label: '"1" — 약한 비', angle: '45° (개방)' },
+    '2': { label: '"2" — 강한 비', angle: '90° (개방)' },
+  };
+
+  /* ── DOM refs ──────────────────────────────────────── */
+  const btnConnect    = document.getElementById('btnConnect');
+  const btnDisconnect = document.getElementById('btnDisconnect');
+  const statusPill    = document.getElementById('statusPill');
+  const statusText    = document.getElementById('statusText');
+  const lastSignal    = document.getElementById('lastSignal');
+  const servoAngle    = document.getElementById('servoAngle');
+  const txStatus      = document.getElementById('txStatus');
+  const logPanel      = document.getElementById('logPanel');
+  const errorBanner   = document.getElementById('errorBanner');
+  const rainBtns      = document.querySelectorAll('.rain-btn');
+
+  /* ── Web Serial support check ──────────────────────── */
+  if (!('serial' in navigator)) {
+    showError(
+      '⚠️ 이 브라우저는 Web Serial API를 지원하지 않습니다. ' +
+      'HTTPS 또는 localhost 환경의 Chrome 89 이상(데스크톱)을 사용해 주세요.'
+    );
+    btnConnect.disabled = true;
+  }
+
+  /* ── Connect ───────────────────────────────────────── */
+  btnConnect.addEventListener('click', async () => {
+    hideError();
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+
+      writer = port.writable.getWriter();
+
+      setConnected(true);
+      addLog('ok', '시리얼 포트 열림 (9600 baud).');
+    } catch (err) {
+      port = null; writer = null;
+      if (err.name !== 'NotFoundError') {          // 사용자 취소 → 무시
+        showError('연결 실패: ' + err.message);
+        addLog('err', '연결 실패: ' + err.message);
+      }
+    }
+  });
+
+  /* ── Disconnect ────────────────────────────────────── */
+  btnDisconnect.addEventListener('click', async () => {
+    await doDisconnect();
+  });
+
+  async function doDisconnect() {
+    try {
+      if (writer) { writer.releaseLock(); writer = null; }
+      if (port)   { await port.close();  port   = null; }
+    } catch (_) { /* ignore */ }
+    setConnected(false);
+    addLog('', '시리얼 포트 연결 해제됨.');
+    txStatus.textContent = '—';
+    txStatus.className   = '';
+  }
+
+  /* ── Rain control buttons ──────────────────────────── */
+  rainBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const cmd = btn.dataset.cmd;
+      await sendCommand(cmd, btn);
+    });
+  });
+
+  async function sendCommand(cmd, btnEl) {
+    if (!writer) return;
+    try {
+      const encoder = new TextEncoder();
+      await writer.write(encoder.encode(cmd));
+
+      /* update display */
+      lastSignal.textContent  = COMMANDS[cmd].label;
+      servoAngle.textContent  = COMMANDS[cmd].angle;
+      txStatus.textContent    = '전송 완료 ✓';
+      txStatus.className      = '';
+
+      addLog('ok', `"${cmd}" 전송 → ${COMMANDS[cmd].angle}`);
+
+      /* flash the button */
+      btnEl.classList.remove('active-flash');
+      void btnEl.offsetWidth;                   // reflow to restart animation
+      btnEl.classList.add('active-flash');
+    } catch (err) {
+      txStatus.textContent = '전송 실패 ✗';
+      txStatus.className   = 'error';
+      showError('전송 실패: ' + err.message);
+      addLog('err', '전송 실패: ' + err.message);
+      await doDisconnect();
+    }
+  }
+
+  /* ── UI helpers ────────────────────────────────────── */
+  function setConnected(yes) {
+    if (yes) {
+      statusPill.classList.add('connected');
+      statusText.textContent    = '연결됨';
+      btnConnect.disabled       = true;
+      btnDisconnect.disabled    = false;
+      rainBtns.forEach(b => b.disabled = false);
+    } else {
+      statusPill.classList.remove('connected');
+      statusText.textContent    = '연결 안 됨';
+      btnConnect.disabled       = false;
+      btnDisconnect.disabled    = true;
+      rainBtns.forEach(b => b.disabled = true);
+    }
+  }
+
+  function addLog(type, msg) {
+    const now = new Date();
+    const ts  = now.toTimeString().slice(0, 8);
+    const li  = document.createElement('li');
+    if (type) li.classList.add(type);
+    li.innerHTML = `<span class="ts">${ts}</span><span class="msg">${escHtml(msg)}</span>`;
+    logPanel.prepend(li);
+    /* cap log at 60 entries */
+    while (logPanel.children.length > 60) logPanel.removeChild(logPanel.lastChild);
+  }
+
+  function showError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.classList.add('show');
+  }
+  function hideError() {
+    errorBanner.classList.remove('show');
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ── Handle unexpected port disconnect ─────────────── */
+  navigator.serial?.addEventListener('disconnect', async (e) => {
+    if (port && e.target === port) {
+      await doDisconnect();
+      showError('시리얼 장치가 예기치 않게 연결 해제되었습니다.');
+      addLog('err', '장치 연결이 예기치 않게 끊겼습니다.');
+    }
+  });
+</script>
+</body>
+</html>
