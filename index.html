@@ -275,7 +275,7 @@
 
   <header>
     <h1>스마트 배수 우수 제어 시스템</h1>
-    <p>HC-05 블루투스 · Web Serial API · 9600 baud</p>
+    <p>Master 아두이노 USB 연결 · Web Serial API · 9600 baud</p>
   </header>
 
   <div id="errorBanner"></div>
@@ -285,7 +285,7 @@
     <div class="card-title">연결 상태</div>
     <div class="conn-row">
       <span id="statusPill"><span class="dot"></span><span id="statusText">연결 안 됨</span></span>
-      <button id="btnConnect"    class="btn btn-primary">HC-05 연결</button>
+      <button id="btnConnect"    class="btn btn-primary">아두이노 연결 (USB)</button>
       <button id="btnDisconnect" class="btn btn-outline" disabled>연결 해제</button>
     </div>
   </div>
@@ -337,7 +337,7 @@
     <ul id="logPanel"></ul>
   </div>
 
-  <footer>Chrome 89 이상 필요 · HTTPS 또는 localhost · HC-05 블루투스 페어링 먼저 완료할 것</footer>
+  <footer>Chrome 89 이상 필요 · HTTPS 또는 localhost · Master 아두이노 USB 케이블 연결 후 사용</footer>
 
 <script>
   /* ── State ─────────────────────────────────────────── */
