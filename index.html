@@ -468,30 +468,40 @@
     .page.hidden-right { transform: translateX(100%);  opacity: 0; pointer-events: none; position: absolute; top: 0; }
     .page.visible      { transform: translateX(0);     opacity: 1; }
 
-    /* ── Intro page styles ───────────────────────────── */
+    /* ══════════════════════════════════════════
+       소개 페이지 — 밝고 투명한 라이트 테마
+    ══════════════════════════════════════════ */
+    #pageIntro {
+      --i-bg:      rgba(255,255,255,0.10);
+      --i-bg2:     rgba(255,255,255,0.07);
+      --i-border:  rgba(255,255,255,0.22);
+      --i-text:    rgba(255,255,255,0.95);
+      --i-sub:     rgba(255,255,255,0.65);
+      --i-muted:   rgba(255,255,255,0.40);
+    }
+
     .intro-section {
       margin-bottom: 12px;
     }
     .intro-section .card-inner {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--i-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--i-border);
       border-radius: var(--radius);
       padding: 20px 22px;
-      position: relative;
-      overflow: hidden;
     }
-    .intro-section .card-inner::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+    #pageIntro .section-label {
+      color: var(--i-sub);
+      border-bottom: 1px solid var(--i-border);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     /* 개요 */
     .overview-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: var(--i-bg2);
+      border: 1px solid var(--i-border);
       border-radius: var(--radius-sm);
       padding: 16px;
       margin-top: 4px;
@@ -499,12 +509,12 @@
     .overview-title {
       font-size: 1rem;
       font-weight: 700;
-      color: var(--accent);
+      color: #fff;
       margin-bottom: 8px;
     }
     .overview-desc {
       font-size: 0.85rem;
-      color: var(--sub);
+      color: var(--i-sub);
       line-height: 1.7;
     }
     .tag-row {
@@ -518,9 +528,9 @@
       font-weight: 600;
       padding: 3px 10px;
       border-radius: 999px;
-      background: rgba(79,142,247,.12);
-      color: var(--accent);
-      border: 1px solid rgba(79,142,247,.25);
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
     }
 
     /* 시스템 구성도 */
@@ -539,33 +549,28 @@
       justify-content: center;
     }
     .flow-node {
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      background: var(--i-bg2);
+      border: 1px solid var(--i-border);
       border-radius: 8px;
       padding: 9px 14px;
       text-align: center;
       font-size: 0.78rem;
     }
     .flow-node .fn-icon { font-size: 1.2rem; display: block; margin-bottom: 3px; }
-    .flow-node .fn-name { font-weight: 700; color: var(--text); }
-    .flow-node .fn-sub  { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
-    .flow-node.master { border-color: rgba(79,142,247,.4); }
-    .flow-node.slave  { border-color: rgba(52,211,153,.4); }
-    .flow-node.sensor { border-color: rgba(251,191,36,.3); }
-    .flow-node.output { border-color: rgba(96,165,250,.3); }
-    .flow-arrow {
-      color: var(--muted);
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
+    .flow-node .fn-name { font-weight: 700; color: #fff; }
+    .flow-node .fn-sub  { font-size: 0.65rem; color: var(--i-muted); margin-top: 2px; }
+    .flow-node.master { border-color: rgba(147,197,253,.5); }
+    .flow-node.slave  { border-color: rgba(110,231,183,.5); }
+    .flow-node.sensor { border-color: rgba(253,224,71,.4); }
+    .flow-node.output { border-color: rgba(196,181,253,.4); }
+    .flow-arrow { color: rgba(255,255,255,.4); font-size: 1rem; flex-shrink: 0; }
     .flow-label {
       font-size: 0.65rem;
-      color: var(--muted);
-      text-align: center;
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
+      color: var(--i-sub);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--i-border);
       border-radius: 4px;
-      padding: 2px 8px;
+      padding: 2px 10px;
     }
 
     /* 부품 목록 */
@@ -573,11 +578,11 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-top: 8px;
+      margin-top: 4px;
     }
     .part-item {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: var(--i-bg2);
+      border: 1px solid var(--i-border);
       border-radius: var(--radius-sm);
       padding: 11px 13px;
       display: flex;
@@ -585,8 +590,8 @@
       gap: 10px;
     }
     .part-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
-    .part-name { font-size: 0.82rem; font-weight: 700; }
-    .part-desc { font-size: 0.68rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .part-name { font-size: 0.82rem; font-weight: 700; color: #fff; }
+    .part-desc { font-size: 0.68rem; color: var(--i-muted); margin-top: 2px; line-height: 1.4; }
 
     /* 작동 원리 */
     .logic-steps {
@@ -603,7 +608,8 @@
     .step-num {
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: var(--accent);
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.4);
       color: #fff;
       font-size: 0.75rem;
       font-weight: 700;
@@ -614,27 +620,29 @@
       margin-top: 1px;
     }
     .step-body { flex: 1; }
-    .step-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
-    .step-desc  { font-size: 0.75rem; color: var(--sub); line-height: 1.5; }
+    .step-title { font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .step-desc  { font-size: 0.75rem; color: var(--i-sub); line-height: 1.5; }
+
     .humidity-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 0.78rem;
     }
     .humidity-table th {
-      background: var(--surface2);
-      color: var(--muted);
+      background: rgba(255,255,255,.08);
+      color: var(--i-muted);
       text-transform: uppercase;
       letter-spacing: .05em;
       font-size: 0.65rem;
-      padding: 7px 10px;
+      padding: 8px 10px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--i-border);
     }
     .humidity-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: var(--i-sub);
     }
     .humidity-table tr:last-child td { border-bottom: none; }
 
@@ -646,30 +654,30 @@
       margin-top: 8px;
     }
     .pin-table th {
-      background: var(--surface2);
-      color: var(--muted);
+      background: rgba(255,255,255,.08);
+      color: var(--i-muted);
       text-transform: uppercase;
       letter-spacing: .05em;
       font-size: 0.65rem;
       padding: 7px 10px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--i-border);
     }
     .pin-table td {
       padding: 7px 10px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      color: var(--sub);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      color: var(--i-sub);
     }
     .pin-table tr:last-child td { border-bottom: none; }
-    .pin-table td:first-child { color: var(--text); font-weight: 600; font-family: monospace; }
+    .pin-table td:first-child { color: #fff; font-weight: 600; font-family: monospace; }
     .pin-board {
       font-size: 0.68rem;
       font-weight: 600;
-      color: var(--muted);
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      color: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.1);
+      border: 1px solid var(--i-border);
       border-radius: 4px;
-      padding: 2px 7px;
+      padding: 2px 9px;
       margin-bottom: 6px;
       display: inline-block;
     }
@@ -682,32 +690,33 @@
       margin-top: 8px;
     }
     .member-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: var(--i-bg2);
+      border: 1px solid var(--i-border);
       border-radius: var(--radius-sm);
-      padding: 14px 10px;
+      padding: 16px 10px;
       text-align: center;
     }
     .member-avatar {
       width: 44px; height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
-      margin: 0 auto 8px;
+      margin: 0 auto 10px;
     }
-    .member-name { font-size: 0.85rem; font-weight: 700; }
-    .member-id   { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
-    .member-role { font-size: 0.68rem; color: var(--accent); margin-top: 4px; font-weight: 600; }
+    .member-name { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    .member-id   { font-size: 0.68rem; color: var(--i-muted); margin-top: 3px; }
     .team-meta {
       text-align: center;
       margin-bottom: 14px;
       font-size: 0.82rem;
-      color: var(--sub);
+      color: var(--i-sub);
+      line-height: 1.7;
     }
-    .team-meta strong { color: var(--text); }
+    .team-meta strong { color: #fff; }
   </style>
 </head>
 <body>
@@ -1084,19 +1093,16 @@
             <div class="member-avatar">👨‍💻</div>
             <div class="member-name">박은수</div>
             <div class="member-id">21011343</div>
-            <div class="member-role">구조 설계</div>
           </div>
           <div class="member-card">
             <div class="member-avatar">👨‍💻</div>
             <div class="member-name">이승준</div>
             <div class="member-id">21011366</div>
-            <div class="member-role">제어 로직</div>
           </div>
           <div class="member-card">
             <div class="member-avatar">👨‍💻</div>
             <div class="member-name">김용준</div>
             <div class="member-id">21011391</div>
-            <div class="member-role">웹 / 시스템</div>
           </div>
         </div>
       </div>
