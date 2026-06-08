@@ -717,6 +717,109 @@
       line-height: 1.7;
     }
     .team-meta strong { color: #fff; }
+
+    /* ══════════════════════════════════════════
+       시연 영상 페이지
+    ══════════════════════════════════════════ */
+    #pageVideo {
+      --v-bg:     rgba(255,255,255,0.10);
+      --v-bg2:    rgba(255,255,255,0.07);
+      --v-border: rgba(255,255,255,0.22);
+      --v-text:   rgba(255,255,255,0.95);
+      --v-sub:    rgba(255,255,255,0.65);
+      --v-muted:  rgba(255,255,255,0.40);
+    }
+    #pageVideo .section-label {
+      color: var(--v-sub);
+      border-bottom: 1px solid var(--v-border);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .video-card {
+      background: var(--v-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--v-border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 12px;
+    }
+    .video-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--v-text);
+      margin-bottom: 4px;
+    }
+    .video-desc {
+      font-size: 0.75rem;
+      color: var(--v-sub);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    /* YouTube 임베드 래퍼 (16:9 비율 유지) */
+    .video-embed {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0,0,0,.3);
+    }
+    .video-embed iframe,
+    .video-embed video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+    /* 영상 없을 때 플레이스홀더 */
+    .video-placeholder {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255,255,255,.05);
+      border: 2px dashed rgba(255,255,255,.2);
+      border-radius: 10px;
+    }
+    .video-placeholder .ph-icon { font-size: 2.5rem; opacity: .5; }
+    .video-placeholder .ph-text {
+      font-size: 0.82rem;
+      color: var(--v-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .video-placeholder .ph-hint {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,.25);
+      font-family: monospace;
+      background: rgba(0,0,0,.2);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .video-guide {
+      background: var(--v-bg2);
+      border: 1px solid var(--v-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.78rem;
+      color: var(--v-sub);
+      line-height: 1.8;
+    }
+    .video-guide code {
+      background: rgba(0,0,0,.25);
+      color: #93c5fd;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+    .video-guide strong { color: #fff; }
   </style>
 </head>
 <body>
@@ -731,8 +834,9 @@
 
   <!-- 탭 네비게이션 -->
   <div class="nav-tabs" style="position:relative;z-index:1;">
-    <button class="nav-tab active" id="tabControl"  onclick="switchPage('control')">🎮 제어 페이지</button>
-    <button class="nav-tab"        id="tabIntro"    onclick="switchPage('intro')">📋 시스템 소개</button>
+    <button class="nav-tab active" id="tabControl"  onclick="switchPage('control')">🎮 제어</button>
+    <button class="nav-tab"        id="tabIntro"    onclick="switchPage('intro')">📋 소개</button>
+    <button class="nav-tab"        id="tabVideo"    onclick="switchPage('video')">🎬 시연 영상</button>
   </div>
 
   <div id="errorBanner"></div>
@@ -1109,6 +1213,86 @@
     </div>
 
   </div><!-- /pageIntro -->
+
+  <!-- ══════════ 시연 영상 페이지 ══════════ -->
+  <div id="pageVideo" class="page hidden-right">
+
+    <!-- ✏️ 영상 추가 방법 안내 카드 -->
+    <div class="video-card">
+      <div class="section-label">영상 추가 방법</div>
+      <div class="video-guide">
+        <strong>① YouTube 영상</strong><br>
+        아래 영상 카드의 <code>YOUR_YOUTUBE_ID</code>를 유튜브 영상 ID로 교체하세요.<br>
+        예) <code>https://youtu.be/<strong>dQw4w9WgXcQ</strong></code> → ID는 <code>dQw4w9WgXcQ</code><br><br>
+        <strong>② 직접 업로드 영상 (.mp4)</strong><br>
+        GitHub 저장소에 영상 파일을 올린 후 <code>&lt;video&gt;</code> 태그의 <code>src</code>를 파일 경로로 바꾸세요.
+      </div>
+    </div>
+
+    <!-- ✏️ 영상 카드 1 — YouTube 임베드 -->
+    <!-- 🔧 수정: YOUR_YOUTUBE_ID_1 을 실제 유튜브 영상 ID로 교체하세요 -->
+    <div class="video-card">
+      <div class="section-label">시연 영상 1</div>
+      <div class="video-label">전체 시스템 시연</div>
+      <div class="video-desc">자동 개폐 동작 및 블루투스 제어 전체 흐름 시연 영상입니다.</div>
+      <div class="video-embed" id="videoWrap1">
+        <!-- ▼ 영상이 생기면 아래 플레이스홀더를 지우고 iframe을 넣으세요 ▼ -->
+        <div class="video-placeholder">
+          <span class="ph-icon">🎬</span>
+          <span class="ph-text">영상을 추가하려면<br>아래 코드를 참고하세요</span>
+          <span class="ph-hint">&lt;iframe src="https://www.youtube.com/embed/YOUR_ID"&gt;</span>
+        </div>
+        <!-- ▼ YouTube 임베드 예시 (주석 해제 후 ID 교체)
+        <iframe
+          src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID_1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+        -->
+      </div>
+    </div>
+
+    <!-- ✏️ 영상 카드 2 — YouTube 임베드 -->
+    <!-- 🔧 수정: YOUR_YOUTUBE_ID_2 를 실제 유튜브 영상 ID로 교체하세요 -->
+    <div class="video-card">
+      <div class="section-label">시연 영상 2</div>
+      <div class="video-label">웹 페이지 수동 제어</div>
+      <div class="video-desc">웹 페이지에서 버튼을 눌러 서보모터를 직접 제어하는 시연 영상입니다.</div>
+      <div class="video-embed" id="videoWrap2">
+        <div class="video-placeholder">
+          <span class="ph-icon">🎬</span>
+          <span class="ph-text">영상을 추가하려면<br>아래 코드를 참고하세요</span>
+          <span class="ph-hint">&lt;iframe src="https://www.youtube.com/embed/YOUR_ID"&gt;</span>
+        </div>
+        <!-- ▼ YouTube 임베드 예시 (주석 해제 후 ID 교체)
+        <iframe
+          src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID_2"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+        -->
+      </div>
+    </div>
+
+    <!-- ✏️ 영상 카드 3 — 로컬 mp4 파일 예시 -->
+    <!-- 🔧 수정: videos/demo.mp4 를 실제 파일 경로로 교체하세요 -->
+    <div class="video-card">
+      <div class="section-label">시연 영상 3</div>
+      <div class="video-label">추가 시연</div>
+      <div class="video-desc">추가 시연 영상입니다. 필요 없으면 이 카드 전체를 삭제하세요.</div>
+      <div class="video-embed" id="videoWrap3">
+        <div class="video-placeholder">
+          <span class="ph-icon">🎬</span>
+          <span class="ph-text">영상을 추가하려면<br>아래 코드를 참고하세요</span>
+          <span class="ph-hint">&lt;video src="videos/파일명.mp4" controls&gt;</span>
+        </div>
+        <!-- ▼ 로컬 mp4 파일 예시 (주석 해제 후 경로 교체)
+        <video src="videos/demo3.mp4" controls></video>
+        -->
+      </div>
+    </div>
+
+  </div><!-- /pageVideo -->
   </div><!-- /page-wrap -->
 
 <script>
@@ -1117,24 +1301,30 @@
   ════════════════════════════════════ */
   let currentPage = 'control';
 
+  const PAGE_ORDER = ['control', 'intro', 'video'];
+
   function switchPage(target) {
     if (target === currentPage) return;
 
+    const fromIdx = PAGE_ORDER.indexOf(currentPage);
+    const toIdx   = PAGE_ORDER.indexOf(target);
+    const goRight = toIdx > fromIdx;
+
     const fromEl = document.getElementById('page' + cap(currentPage));
     const toEl   = document.getElementById('page' + cap(target));
-    const goRight = target === 'intro';
 
     // 나가는 페이지
     fromEl.classList.remove('visible');
     fromEl.classList.add(goRight ? 'hidden-left' : 'hidden-right');
 
-    // 들어오는 페이지 (반대 방향에서 진입)
+    // 들어오는 페이지
     toEl.classList.remove(goRight ? 'hidden-right' : 'hidden-left');
     toEl.classList.add('visible');
 
     // 탭 활성화
     document.getElementById('tabControl').classList.toggle('active', target === 'control');
     document.getElementById('tabIntro').classList.toggle('active',   target === 'intro');
+    document.getElementById('tabVideo').classList.toggle('active',   target === 'video');
 
     currentPage = target;
   }
