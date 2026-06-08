@@ -11,11 +11,11 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #080a0f;
-      --surface:  #0f1218;
-      --surface2: #161b24;
-      --border:   #1e2535;
-      --border2:  #2a3347;
+      --bg:       #3a7fc1;
+      --surface:  rgba(8, 16, 32, 0.72);
+      --surface2: rgba(8, 16, 32, 0.5);
+      --border:   rgba(255,255,255,.12);
+      --border2:  rgba(255,255,255,.2);
       --text:     #e8edf5;
       --sub:      #8896aa;
       --muted:    #4a5568;
@@ -83,6 +83,8 @@
     /* ── Card ────────────────────────────────────────── */
     .card {
       background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 20px 22px;
@@ -790,7 +792,7 @@
     Drop.prototype.draw = function () {
       ctx.save();
       ctx.globalAlpha = this.alpha;
-      ctx.strokeStyle = '#a8c8f8';
+      ctx.strokeStyle = '#c8e8ff';
       ctx.lineWidth   = this.thick;
       ctx.lineCap     = 'round';
       ctx.beginPath();
@@ -820,7 +822,7 @@
     Splash.prototype.draw = function () {
       ctx.save();
       ctx.globalAlpha = this.alpha;
-      ctx.strokeStyle = '#a8c8f8';
+      ctx.strokeStyle = '#c8e8ff';
       ctx.lineWidth   = 0.6;
       ctx.beginPath();
       ctx.ellipse(this.x, this.y, this.r, this.r * 0.35, 0, 0, Math.PI * 2);
@@ -848,15 +850,16 @@
     /* ── 배경 그라디언트 ──────────────── */
     function drawBg() {
       const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0,   '#04060c');
-      grad.addColorStop(0.5, '#070c16');
-      grad.addColorStop(1,   '#050810');
+      grad.addColorStop(0,    '#3a7fc1');  // 상단: 진한 하늘
+      grad.addColorStop(0.4,  '#5ba3d9');  // 중상: 하늘색
+      grad.addColorStop(0.75, '#80bde8');  // 중하: 연한 하늘
+      grad.addColorStop(1,    '#9ecfe0');  // 하단: 밝은 청록
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
 
-      // 상단 은은한 블루 포인트
-      const glow = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, W * 0.6);
-      glow.addColorStop(0,   'rgba(60,100,200,.09)');
+      // 구름 느낌 밝은 포인트
+      const glow = ctx.createRadialGradient(W * 0.5, H * 0.12, 0, W * 0.5, H * 0.12, W * 0.55);
+      glow.addColorStop(0,   'rgba(255,255,255,.22)');
       glow.addColorStop(1,   'transparent');
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, W, H);
@@ -867,8 +870,8 @@
     function drawFog() {
       fogOffset = (fogOffset + 0.15) % W;
       ctx.save();
-      ctx.globalAlpha = 0.04;
-      ctx.fillStyle   = '#7ab0e8';
+      ctx.globalAlpha = 0.12;
+      ctx.fillStyle   = '#ffffff';
       // 가로로 흐르는 안개 띠 3줄
       [H * 0.3, H * 0.55, H * 0.75].forEach((fy, i) => {
         ctx.beginPath();
