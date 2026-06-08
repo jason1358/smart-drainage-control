@@ -420,6 +420,294 @@
       text-align: center;
       line-height: 1.8;
     }
+
+    /* ── Navigation tabs ─────────────────────────────── */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .nav-tab {
+      padding: 8px 22px;
+      border-radius: 999px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .25s;
+      background: transparent;
+      color: var(--sub);
+      letter-spacing: .01em;
+    }
+    .nav-tab.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(79,142,247,.35);
+    }
+    .nav-tab:not(.active):hover { color: var(--text); }
+
+    /* ── Page wrapper (slide transition) ────────────── */
+    .page-wrap {
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      position: relative;
+    }
+    .page {
+      width: 100%;
+      transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .35s ease;
+    }
+    .page.hidden-left  { transform: translateX(-100%); opacity: 0; pointer-events: none; position: absolute; top: 0; }
+    .page.hidden-right { transform: translateX(100%);  opacity: 0; pointer-events: none; position: absolute; top: 0; }
+    .page.visible      { transform: translateX(0);     opacity: 1; }
+
+    /* ── Intro page styles ───────────────────────────── */
+    .intro-section {
+      margin-bottom: 12px;
+    }
+    .intro-section .card-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .intro-section .card-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+    }
+
+    /* 개요 */
+    .overview-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-top: 4px;
+    }
+    .overview-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .overview-desc {
+      font-size: 0.85rem;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(79,142,247,.12);
+      color: var(--accent);
+      border: 1px solid rgba(79,142,247,.25);
+    }
+
+    /* 시스템 구성도 */
+    .flow-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .flow-node {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 9px 14px;
+      text-align: center;
+      font-size: 0.78rem;
+    }
+    .flow-node .fn-icon { font-size: 1.2rem; display: block; margin-bottom: 3px; }
+    .flow-node .fn-name { font-weight: 700; color: var(--text); }
+    .flow-node .fn-sub  { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+    .flow-node.master { border-color: rgba(79,142,247,.4); }
+    .flow-node.slave  { border-color: rgba(52,211,153,.4); }
+    .flow-node.sensor { border-color: rgba(251,191,36,.3); }
+    .flow-node.output { border-color: rgba(96,165,250,.3); }
+    .flow-arrow {
+      color: var(--muted);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .flow-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+
+    /* 부품 목록 */
+    .parts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .part-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .part-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .part-name { font-size: 0.82rem; font-weight: 700; }
+    .part-desc { font-size: 0.68rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+    /* 작동 원리 */
+    .logic-steps {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .logic-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
+    .step-desc  { font-size: 0.75rem; color: var(--sub); line-height: 1.5; }
+    .humidity-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.78rem;
+    }
+    .humidity-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 0.65rem;
+      padding: 7px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .humidity-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .humidity-table tr:last-child td { border-bottom: none; }
+
+    /* 핀 배치표 */
+    .pin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin-top: 8px;
+    }
+    .pin-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 0.65rem;
+      padding: 7px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .pin-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      color: var(--sub);
+    }
+    .pin-table tr:last-child td { border-bottom: none; }
+    .pin-table td:first-child { color: var(--text); font-weight: 600; font-family: monospace; }
+    .pin-board {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    /* 팀 정보 */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .member-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .member-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin: 0 auto 8px;
+    }
+    .member-name { font-size: 0.85rem; font-weight: 700; }
+    .member-id   { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+    .member-role { font-size: 0.68rem; color: var(--accent); margin-top: 4px; font-weight: 600; }
+    .team-meta {
+      text-align: center;
+      margin-bottom: 14px;
+      font-size: 0.82rem;
+      color: var(--sub);
+    }
+    .team-meta strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -429,10 +717,20 @@
   <header>
     <span class="header-icon">⚙️</span>
     <h1>스마트 그레이팅 제어 시스템</h1>
-    <p>Web Serial API &nbsp;·&nbsp; 9600 baud &nbsp;·&nbsp; HC-05 Bluetooth</p>
+    <p>자동 개폐식 스마트 배수구 시스템 &nbsp;·&nbsp; 종합설계 A Team 4</p>
   </header>
 
+  <!-- 탭 네비게이션 -->
+  <div class="nav-tabs" style="position:relative;z-index:1;">
+    <button class="nav-tab active" id="tabControl"  onclick="switchPage('control')">🎮 제어 페이지</button>
+    <button class="nav-tab"        id="tabIntro"    onclick="switchPage('intro')">📋 시스템 소개</button>
+  </div>
+
   <div id="errorBanner"></div>
+
+  <div class="page-wrap">
+  <!-- ══════════ 제어 페이지 ══════════ -->
+  <div id="pageControl" class="page visible">
 
   <!-- 현재 날씨 -->
   <div class="card">
@@ -510,7 +808,334 @@
     Master HC-05 전원 차단 후 Slave HC-05 페어링 필요
   </footer>
 
+  </div><!-- /pageControl -->
+
+  <!-- ══════════ 시스템 소개 페이지 ══════════ -->
+  <div id="pageIntro" class="page hidden-right">
+
+    <!-- 1. 프로젝트 개요 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">프로젝트 개요</div>
+        <div class="overview-box">
+          <div class="overview-title">자동 개폐식 스마트 배수구 시스템</div>
+          <div class="overview-desc">
+            강수량 및 습도 데이터를 실시간으로 수집하여 배수 그레이팅의 개폐 각도를 자동으로 제어하는 스마트 시스템입니다.
+            BME280 환경 센서로 습도를 측정하고 블루투스 통신으로 구동부에 명령을 전달하며,
+            웹 페이지를 통한 수동 제어도 지원합니다.
+          </div>
+          <div class="tag-row">
+            <span class="tag">IoT</span>
+            <span class="tag">Arduino</span>
+            <span class="tag">Bluetooth</span>
+            <span class="tag">서보모터</span>
+            <span class="tag">웹 제어</span>
+            <span class="tag">종합설계 A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 시스템 구성도 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">시스템 구성도</div>
+        <div class="flow-wrap">
+          <div class="flow-row">
+            <div class="flow-node sensor">
+              <span class="fn-icon">🌡️</span>
+              <span class="fn-name">BME280</span>
+              <span class="fn-sub">온도·습도·기압</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node master">
+              <span class="fn-icon">🖥️</span>
+              <span class="fn-name">Master Arduino</span>
+              <span class="fn-sub">제어 로직 + LCD</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node sensor">
+              <span class="fn-icon">📡</span>
+              <span class="fn-name">HC-05 Master</span>
+              <span class="fn-sub">블루투스 송신</span>
+            </div>
+          </div>
+          <span class="flow-arrow" style="font-size:1.4rem;">↓</span>
+          <div class="flow-label">블루투스 무선 통신 (9600 baud)</div>
+          <span class="flow-arrow" style="font-size:1.4rem;">↓</span>
+          <div class="flow-row">
+            <div class="flow-node sensor">
+              <span class="fn-icon">📡</span>
+              <span class="fn-name">HC-05 Slave</span>
+              <span class="fn-sub">블루투스 수신</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node slave">
+              <span class="fn-icon">🖥️</span>
+              <span class="fn-name">Slave Arduino</span>
+              <span class="fn-sub">명령 처리 + LED</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node output">
+              <span class="fn-icon">⚙️</span>
+              <span class="fn-name">PCA9685</span>
+              <span class="fn-sub">서보 드라이버</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node output">
+              <span class="fn-icon">🔧</span>
+              <span class="fn-name">MG996R ×2</span>
+              <span class="fn-sub">그레이팅 구동</span>
+            </div>
+          </div>
+          <div class="flow-label" style="margin-top:4px;">💻 웹 페이지 수동 제어 (USB Serial)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 사용 부품 목록 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">사용 부품 목록</div>
+        <div class="parts-grid">
+          <div class="part-item">
+            <span class="part-icon">🖥️</span>
+            <div>
+              <div class="part-name">Arduino UNO ×2</div>
+              <div class="part-desc">Master / Slave 제어 보드</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">📡</span>
+            <div>
+              <div class="part-name">HC-05 ×2</div>
+              <div class="part-desc">블루투스 시리얼 모듈 (Master/Slave)</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">🌡️</span>
+            <div>
+              <div class="part-name">BME280</div>
+              <div class="part-desc">온도·습도·기압 센서 (I²C)</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">⚙️</span>
+            <div>
+              <div class="part-name">PCA9685</div>
+              <div class="part-desc">16채널 PWM 서보 드라이버 (I²C)</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">🔧</span>
+            <div>
+              <div class="part-name">MG996R ×2</div>
+              <div class="part-desc">금속 기어 서보모터 (CH0, CH15)</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">🖱️</span>
+            <div>
+              <div class="part-name">Push Button ×2</div>
+              <div class="part-desc">Master 시스템 ON/OFF, Slave 리셋</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">💡</span>
+            <div>
+              <div class="part-name">RGB LED ×3</div>
+              <div class="part-desc">상태 표시 (적·녹·청)</div>
+            </div>
+          </div>
+          <div class="part-item">
+            <span class="part-icon">🖥️</span>
+            <div>
+              <div class="part-name">LCD 16×2</div>
+              <div class="part-desc">Master 센서값 및 상태 표시</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 작동 원리 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">작동 원리</div>
+        <div class="logic-steps">
+          <div class="logic-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">환경 감지</div>
+              <div class="step-desc">BME280 센서가 2초마다 온도·습도·기압을 측정합니다.</div>
+            </div>
+          </div>
+          <div class="logic-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">모드 판단</div>
+              <div class="step-desc">습도값을 기준으로 3단계 모드를 자동 결정합니다.</div>
+            </div>
+          </div>
+          <div class="logic-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">블루투스 전송</div>
+              <div class="step-desc">Master HC-05 → Slave HC-05로 명령 문자(0/1/2)를 무선 전송합니다.</div>
+            </div>
+          </div>
+          <div class="logic-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">서보 구동</div>
+              <div class="step-desc">Slave Arduino가 명령을 수신하여 PCA9685를 통해 서보모터 2개를 부드럽게 회전시킵니다.</div>
+            </div>
+          </div>
+        </div>
+        <table class="humidity-table">
+          <thead>
+            <tr>
+              <th>습도 기준</th>
+              <th>모드</th>
+              <th>서보 각도</th>
+              <th>LED 색상</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--green)">≤ 65%</td>
+              <td>비 없음</td>
+              <td>0° (닫힘)</td>
+              <td style="color:var(--red)">🔴 빨강</td>
+            </tr>
+            <tr>
+              <td style="color:var(--yellow)">65% ~ 75%</td>
+              <td>약한 비</td>
+              <td>45° 개방</td>
+              <td style="color:var(--green)">🟢 초록</td>
+            </tr>
+            <tr>
+              <td style="color:var(--blue)">≥ 75%</td>
+              <td>강한 비</td>
+              <td>90° 개방</td>
+              <td style="color:var(--blue)">🔵 파랑</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5. 핀 배치표 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">핀 배치표</div>
+
+        <span class="pin-board">Master Arduino</span>
+        <table class="pin-table">
+          <thead><tr><th>핀</th><th>연결 부품</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td>A4 (SDA)</td><td>BME280</td><td>I²C 데이터</td></tr>
+            <tr><td>A5 (SCL)</td><td>BME280</td><td>I²C 클럭</td></tr>
+            <tr><td>D2</td><td>LCD RS</td><td>레지스터 선택</td></tr>
+            <tr><td>D3</td><td>LCD E</td><td>Enable</td></tr>
+            <tr><td>D4–D7</td><td>LCD D4–D7</td><td>데이터 버스</td></tr>
+            <tr><td>D8</td><td>Push Button</td><td>시스템 ON/OFF</td></tr>
+            <tr><td>D10 (RX)</td><td>HC-05 TXD</td><td>블루투스 수신</td></tr>
+            <tr><td>D11 (TX)</td><td>HC-05 RXD</td><td>블루투스 송신</td></tr>
+          </tbody>
+        </table>
+
+        <span class="pin-board" style="margin-top:14px;">Slave Arduino</span>
+        <table class="pin-table">
+          <thead><tr><th>핀</th><th>연결 부품</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td>A4 (SDA)</td><td>PCA9685</td><td>I²C 데이터</td></tr>
+            <tr><td>A5 (SCL)</td><td>PCA9685</td><td>I²C 클럭</td></tr>
+            <tr><td>D2 (RX)</td><td>HC-05 TXD</td><td>블루투스 수신</td></tr>
+            <tr><td>D3 (TX)</td><td>HC-05 RXD</td><td>블루투스 송신</td></tr>
+            <tr><td>D4</td><td>Push Button</td><td>리셋</td></tr>
+            <tr><td>D8</td><td>Red LED</td><td>상태 표시 (0°)</td></tr>
+            <tr><td>D9</td><td>Green LED</td><td>상태 표시 (45°)</td></tr>
+            <tr><td>D10</td><td>Blue LED</td><td>상태 표시 (90°)</td></tr>
+          </tbody>
+        </table>
+
+        <span class="pin-board" style="margin-top:14px;">PCA9685</span>
+        <table class="pin-table">
+          <thead><tr><th>채널</th><th>연결 부품</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td>CH0</td><td>MG996R #1</td><td>서보모터 1번</td></tr>
+            <tr><td>CH15</td><td>MG996R #2</td><td>서보모터 2번</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 6. 팀 정보 -->
+    <div class="intro-section">
+      <div class="card-inner">
+        <div class="section-label">팀 정보</div>
+        <div class="team-meta">
+          <strong>종합설계 A &nbsp;·&nbsp; Team 4</strong><br>
+          세종대학교 &nbsp;·&nbsp; 2026학년도 1학기
+        </div>
+        <div class="team-grid">
+          <div class="member-card">
+            <div class="member-avatar">👨‍💻</div>
+            <div class="member-name">박은수</div>
+            <div class="member-id">21011343</div>
+            <div class="member-role">구조 설계</div>
+          </div>
+          <div class="member-card">
+            <div class="member-avatar">👨‍💻</div>
+            <div class="member-name">이승준</div>
+            <div class="member-id">21011366</div>
+            <div class="member-role">제어 로직</div>
+          </div>
+          <div class="member-card">
+            <div class="member-avatar">👨‍💻</div>
+            <div class="member-name">김용준</div>
+            <div class="member-id">21011391</div>
+            <div class="member-role">웹 / 시스템</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pageIntro -->
+  </div><!-- /page-wrap -->
+
 <script>
+  /* ════════════════════════════════════
+     페이지 전환
+  ════════════════════════════════════ */
+  let currentPage = 'control';
+
+  function switchPage(target) {
+    if (target === currentPage) return;
+
+    const fromEl = document.getElementById('page' + cap(currentPage));
+    const toEl   = document.getElementById('page' + cap(target));
+    const goRight = target === 'intro';
+
+    // 나가는 페이지
+    fromEl.classList.remove('visible');
+    fromEl.classList.add(goRight ? 'hidden-left' : 'hidden-right');
+
+    // 들어오는 페이지 (반대 방향에서 진입)
+    toEl.classList.remove(goRight ? 'hidden-right' : 'hidden-left');
+    toEl.classList.add('visible');
+
+    // 탭 활성화
+    document.getElementById('tabControl').classList.toggle('active', target === 'control');
+    document.getElementById('tabIntro').classList.toggle('active',   target === 'intro');
+
+    currentPage = target;
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+
   /* ════════════════════════════════════
      날씨 (Open-Meteo · API 키 불필요)
   ════════════════════════════════════ */
