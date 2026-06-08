@@ -37,8 +37,21 @@
       flex-direction: column;
       align-items: center;
       padding: 32px 16px 56px;
-      background-image:
-        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(79,142,247,.08) 0%, transparent 70%);
+    }
+
+    /* ── Rain canvas ─────────────────────────────────── */
+    #rainCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 콘텐츠는 캔버스 위에 */
+    header, .card, #errorBanner, footer {
+      position: relative;
+      z-index: 1;
     }
 
     /* ── Header ─────────────────────────────────────── */
@@ -411,6 +424,8 @@
 </head>
 <body>
 
+  <canvas id="rainCanvas"></canvas>
+
   <header>
     <span class="header-icon">⚙️</span>
     <h1>스마트 그레이팅 제어 시스템</h1>
@@ -745,6 +760,143 @@
       addLog('err', '장치 연결 끊김');
     }
   });
+
+
+  /* ════════════════════════════════════
+     빗방울 배경 애니메이션
+  ════════════════════════════════════ */
+  (function () {
+    const canvas = document.getElementById('rainCanvas');
+    const ctx    = canvas.getContext('2d');
+
+    let W, H, drops, splashes;
+
+    /* ── 빗방울 클래스 ─────────────────── */
+    function Drop() { this.reset(true); }
+    Drop.prototype.reset = function (init) {
+      this.x     = Math.random() * W;
+      this.y     = init ? Math.random() * H : -20;
+      this.len   = 12 + Math.random() * 20;       // 빗방울 길이
+      this.speed = 10 + Math.random() * 16;        // 낙하 속도
+      this.thick = 0.4 + Math.random() * 0.8;      // 굵기
+      this.alpha = 0.15 + Math.random() * 0.35;    // 투명도
+      this.angle = 0.22;                           // 기울기 (바람)
+    };
+    Drop.prototype.update = function () {
+      this.x += Math.sin(this.angle) * this.speed * 0.4;
+      this.y += this.speed;
+      if (this.y > H + 20) this.reset(false);
+    };
+    Drop.prototype.draw = function () {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.strokeStyle = '#a8c8f8';
+      ctx.lineWidth   = this.thick;
+      ctx.lineCap     = 'round';
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(
+        this.x - Math.sin(this.angle) * this.len,
+        this.y - this.len
+      );
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    /* ── 튀김 클래스 ──────────────────── */
+    function Splash(x, y) {
+      this.x     = x;
+      this.y     = y;
+      this.r     = 0;
+      this.maxR  = 3 + Math.random() * 5;
+      this.alpha = 0.5 + Math.random() * 0.3;
+      this.alive = true;
+    }
+    Splash.prototype.update = function () {
+      this.r     += 0.6;
+      this.alpha -= 0.035;
+      if (this.alpha <= 0) this.alive = false;
+    };
+    Splash.prototype.draw = function () {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.strokeStyle = '#a8c8f8';
+      ctx.lineWidth   = 0.6;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, this.r, this.r * 0.35, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    /* ── 초기화 ───────────────────────── */
+    function init() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      drops    = Array.from({ length: 180 }, () => new Drop());
+      splashes = [];
+    }
+
+    /* ── 바닥 튀김 생성 ───────────────── */
+    function spawnSplashes() {
+      drops.forEach(d => {
+        if (d.y > H - 2 && Math.random() < 0.08) {
+          splashes.push(new Splash(d.x, H - 1));
+        }
+      });
+    }
+
+    /* ── 배경 그라디언트 ──────────────── */
+    function drawBg() {
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0,   '#04060c');
+      grad.addColorStop(0.5, '#070c16');
+      grad.addColorStop(1,   '#050810');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 상단 은은한 블루 포인트
+      const glow = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, W * 0.6);
+      glow.addColorStop(0,   'rgba(60,100,200,.09)');
+      glow.addColorStop(1,   'transparent');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    /* ── 안개 레이어 ──────────────────── */
+    let fogOffset = 0;
+    function drawFog() {
+      fogOffset = (fogOffset + 0.15) % W;
+      ctx.save();
+      ctx.globalAlpha = 0.04;
+      ctx.fillStyle   = '#7ab0e8';
+      // 가로로 흐르는 안개 띠 3줄
+      [H * 0.3, H * 0.55, H * 0.75].forEach((fy, i) => {
+        ctx.beginPath();
+        const sx = (fogOffset * (1 + i * 0.3)) % W;
+        ctx.ellipse(sx - W * 0.1, fy, W * 0.7, 40 + i * 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    /* ── 메인 루프 ────────────────────── */
+    function loop() {
+      drawBg();
+      drawFog();
+
+      drops.forEach(d => { d.update(); d.draw(); });
+
+      spawnSplashes();
+      splashes = splashes.filter(s => s.alive);
+      splashes.forEach(s => { s.update(); s.draw(); });
+
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', init);
+    init();
+    loop();
+  })();
 </script>
 </body>
 </html>
