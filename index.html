@@ -4,51 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>스마트 그레이팅 제어 시스템</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0f1117;
-      --surface:   #1a1d27;
-      --border:    #2a2d3e;
-      --text:      #e2e8f0;
-      --muted:     #64748b;
-      --accent:    #3b82f6;
-      --green:     #22c55e;
-      --yellow:    #eab308;
-      --red:       #ef4444;
-      --radius:    12px;
+      --bg:       #080a0f;
+      --surface:  #0f1218;
+      --surface2: #161b24;
+      --border:   #1e2535;
+      --border2:  #2a3347;
+      --text:     #e8edf5;
+      --sub:      #8896aa;
+      --muted:    #4a5568;
+      --accent:   #4f8ef7;
+      --green:    #34d399;
+      --yellow:   #fbbf24;
+      --blue:     #60a5fa;
+      --red:      #f87171;
+      --radius:   14px;
+      --radius-sm:8px;
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px 48px;
+      padding: 32px 16px 56px;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(79,142,247,.08) 0%, transparent 70%);
     }
 
     /* ── Header ─────────────────────────────────────── */
     header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
+    }
+    .header-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      display: block;
     }
     header h1 {
-      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
       font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      letter-spacing: -0.6px;
+      background: linear-gradient(135deg, #93c5fd 0%, #c4b5fd 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     header p {
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: 6px;
+      letter-spacing: 0.02em;
     }
 
     /* ── Card ────────────────────────────────────────── */
@@ -56,63 +72,173 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 20px 22px;
       width: 100%;
-      max-width: 540px;
-      margin-bottom: 16px;
+      max-width: 520px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
     }
-    .card-title {
-      font-size: 0.75rem;
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+    }
+
+    .section-label {
+      font-size: 0.68rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--muted);
       margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .card-title-badge {
-      font-size: 0.65rem;
-      background: rgba(59,130,246,.15);
-      color: #60a5fa;
-      border: 1px solid rgba(59,130,246,.3);
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-weight: 500;
-      letter-spacing: 0;
-      text-transform: none;
-    }
 
-    /* ── Status pill ─────────────────────────────────── */
+    /* ── Error banner ────────────────────────────────── */
+    #errorBanner {
+      display: none;
+      background: rgba(248,113,113,.08);
+      border: 1px solid rgba(248,113,113,.25);
+      color: #fca5a5;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 520px;
+    }
+    #errorBanner.show { display: block; }
+
+    /* ── Weather card ────────────────────────────────── */
+    .weather-top {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .weather-emoji {
+      font-size: 3.2rem;
+      line-height: 1;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,.15));
+    }
+    .weather-info { flex: 1; }
+    .weather-temp {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .weather-desc {
+      font-size: 0.85rem;
+      color: var(--sub);
+      margin-top: 4px;
+    }
+    .weather-loc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .weather-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .wstat {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 6px;
+      text-align: center;
+    }
+    .wstat-val {
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .wstat-lbl {
+      font-size: 0.6rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-top: 3px;
+    }
+    .weather-foot {
+      font-size: 0.67rem;
+      color: var(--muted);
+      margin-top: 12px;
+      text-align: right;
+    }
+    .weather-loading {
+      text-align: center;
+      color: var(--sub);
+      font-size: 0.88rem;
+      padding: 20px 0;
+    }
+    .weather-err {
+      color: #fca5a5;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .hum-low  { color: var(--green); }
+    .hum-mid  { color: var(--yellow); }
+    .hum-high { color: var(--blue); }
+
+    #btnWeatherRefresh {
+      background: none;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    #btnWeatherRefresh:hover:not(:disabled) { border-color: var(--sub); color: var(--sub); }
+    #btnWeatherRefresh:disabled { opacity: .35; cursor: default; }
+
+    /* ── Connection card ─────────────────────────────── */
+    .conn-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
     #statusPill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
+      gap: 7px;
+      padding: 5px 13px;
       border-radius: 999px;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      background: rgba(239,68,68,.12);
+      background: rgba(248,113,113,.08);
       color: var(--red);
-      border: 1px solid rgba(239,68,68,.3);
+      border: 1px solid rgba(248,113,113,.2);
       transition: all .3s;
+      letter-spacing: .01em;
     }
     #statusPill.connected {
-      background: rgba(34,197,94,.12);
+      background: rgba(52,211,153,.08);
       color: var(--green);
-      border-color: rgba(34,197,94,.3);
+      border-color: rgba(52,211,153,.25);
     }
     #statusPill .dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: currentColor;
-      animation: none;
     }
-    #statusPill.connected .dot { animation: blink 1.5s infinite; }
-    @keyframes blink {
-      0%,100% { opacity: 1; }
-      50%      { opacity: .4; }
+    #statusPill.connected .dot { animation: pulse 1.8s ease infinite; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(.85); }
     }
 
     /* ── Buttons ─────────────────────────────────────── */
@@ -120,469 +246,375 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
       border: none;
-      transition: opacity .2s, transform .1s, box-shadow .2s;
+      transition: all .18s;
+      letter-spacing: .01em;
     }
-    .btn:active { transform: scale(.97); }
-    .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+    .btn:active:not(:disabled) { transform: scale(.96); }
+    .btn:disabled { opacity: .3; cursor: not-allowed; }
 
     .btn-primary {
       background: var(--accent);
       color: #fff;
+      box-shadow: 0 1px 8px rgba(79,142,247,.25);
     }
-    .btn-primary:not(:disabled):hover { box-shadow: 0 0 0 3px rgba(59,130,246,.3); }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
+    .btn-primary:not(:disabled):hover {
+      background: #6aa0f8;
+      box-shadow: 0 2px 14px rgba(79,142,247,.4);
+    }
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--sub);
       border: 1px solid var(--border);
     }
-    .btn-outline:not(:disabled):hover { border-color: var(--muted); }
+    .btn-ghost:not(:disabled):hover { border-color: var(--border2); color: var(--text); }
 
-    .conn-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* ── Rain control buttons ────────────────────────── */
-    .rain-grid {
+    /* ── Control buttons ─────────────────────────────── */
+    .ctrl-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
-    .rain-btn {
+    .ctrl-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 20px 12px;
+      gap: 10px;
+      padding: 22px 10px 18px;
       border-radius: var(--radius);
-      border: 2px solid transparent;
+      border: 1px solid transparent;
+      background: var(--surface2);
       cursor: pointer;
-      font-weight: 700;
-      font-size: 0.9rem;
+      font-family: inherit;
       transition: all .2s;
       position: relative;
       overflow: hidden;
     }
-    .rain-btn:disabled { opacity: .3; cursor: not-allowed; }
-    .rain-btn:not(:disabled):hover { transform: translateY(-2px); }
-    .rain-btn:not(:disabled):active { transform: scale(.97); }
+    .ctrl-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .ctrl-btn:disabled { opacity: .25; cursor: not-allowed; }
+    .ctrl-btn:not(:disabled):hover { transform: translateY(-3px); }
+    .ctrl-btn:not(:disabled):active { transform: scale(.96); }
 
-    .rain-btn .icon  { font-size: 2.2rem; line-height: 1; }
-    .rain-btn .label { font-size: 0.95rem; }
-    .rain-btn .sub   { font-size: 0.72rem; font-weight: 400; opacity: .75; }
+    .ctrl-btn .c-icon  { font-size: 2rem; line-height: 1; }
+    .ctrl-btn .c-label { font-size: 0.88rem; font-weight: 700; }
+    .ctrl-btn .c-sub   { font-size: 0.68rem; font-weight: 400; opacity: .6; }
 
-    .rain-btn.btn-0 {
-      background: rgba(34,197,94,.1);
-      border-color: rgba(34,197,94,.35);
+    .ctrl-btn.c0 {
+      border-color: rgba(52,211,153,.2);
       color: var(--green);
     }
-    .rain-btn.btn-0:not(:disabled):hover { background: rgba(34,197,94,.18); box-shadow: 0 0 16px rgba(34,197,94,.2); }
-
-    .rain-btn.btn-1 {
-      background: rgba(234,179,8,.1);
-      border-color: rgba(234,179,8,.35);
+    .ctrl-btn.c0:not(:disabled):hover {
+      border-color: rgba(52,211,153,.4);
+      background: rgba(52,211,153,.06);
+      box-shadow: 0 4px 20px rgba(52,211,153,.12);
+    }
+    .ctrl-btn.c1 {
+      border-color: rgba(251,191,36,.2);
       color: var(--yellow);
     }
-    .rain-btn.btn-1:not(:disabled):hover { background: rgba(234,179,8,.18); box-shadow: 0 0 16px rgba(234,179,8,.2); }
-
-    .rain-btn.btn-2 {
-      background: rgba(59,130,246,.1);
-      border-color: rgba(59,130,246,.35);
-      color: #60a5fa;
+    .ctrl-btn.c1:not(:disabled):hover {
+      border-color: rgba(251,191,36,.4);
+      background: rgba(251,191,36,.06);
+      box-shadow: 0 4px 20px rgba(251,191,36,.12);
     }
-    .rain-btn.btn-2:not(:disabled):hover { background: rgba(59,130,246,.18); box-shadow: 0 0 16px rgba(59,130,246,.2); }
+    .ctrl-btn.c2 {
+      border-color: rgba(96,165,250,.2);
+      color: var(--blue);
+    }
+    .ctrl-btn.c2:not(:disabled):hover {
+      border-color: rgba(96,165,250,.4);
+      background: rgba(96,165,250,.06);
+      box-shadow: 0 4px 20px rgba(96,165,250,.12);
+    }
 
-    .rain-btn.active-flash { animation: btnFlash .35s ease; }
-    @keyframes btnFlash {
+    .ctrl-btn.flash { animation: flash .3s ease; }
+    @keyframes flash {
       0%   { filter: brightness(1); }
-      40%  { filter: brightness(1.7); }
+      45%  { filter: brightness(1.8); }
       100% { filter: brightness(1); }
     }
 
-    /* ── Info display ────────────────────────────────── */
-    .info-grid {
+    /* ── Status grid ─────────────────────────────────── */
+    .stat-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
-    .info-item {
-      background: rgba(255,255,255,.03);
+    .stat-item {
+      background: var(--surface2);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
+      border-radius: var(--radius-sm);
+      padding: 13px 10px;
       text-align: center;
     }
-    .info-item .val {
-      font-size: 1.15rem;
+    .stat-val {
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
+      line-height: 1.3;
     }
-    .info-item .lbl {
-      font-size: 0.7rem;
+    .stat-lbl {
+      font-size: 0.62rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: .06em;
     }
-    #txStatus { color: var(--green); }
+    #txStatus       { color: var(--green); }
     #txStatus.error { color: var(--red); }
 
     /* ── Log panel ───────────────────────────────────── */
     #logPanel {
       list-style: none;
-      max-height: 160px;
+      max-height: 150px;
       overflow-y: auto;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-family: 'Consolas', 'Courier New', monospace;
-      color: var(--muted);
       scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
+      scrollbar-color: var(--border2) transparent;
     }
     #logPanel li {
-      padding: 3px 0;
-      border-bottom: 1px solid rgba(255,255,255,.04);
       display: flex;
-      gap: 10px;
+      gap: 12px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,.03);
     }
-    #logPanel li .ts  { color: #475569; min-width: 80px; }
-    #logPanel li .msg { color: #94a3b8; }
-    #logPanel li.ok  .msg { color: #86efac; }
-    #logPanel li.err .msg { color: #fca5a5; }
-
-    /* ── Weather card ────────────────────────────────── */
-    .weather-main {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .weather-icon {
-      font-size: 3.5rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .weather-primary {
-      flex: 1;
-    }
-    .weather-temp {
-      font-size: 2.2rem;
-      font-weight: 700;
-      line-height: 1;
-      color: var(--text);
-    }
-    .weather-desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-    .weather-location {
-      font-size: 0.78rem;
-      color: #475569;
-      margin-top: 2px;
-    }
-    .weather-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 8px;
-    }
-    .weather-item {
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-    .weather-item .w-val {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-    .weather-item .w-lbl {
-      font-size: 0.65rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .weather-updated {
-      font-size: 0.7rem;
-      color: #334155;
-      margin-top: 12px;
-      text-align: right;
-    }
-    .weather-loading {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-      padding: 16px 0;
-    }
-    .weather-error {
-      color: #fca5a5;
-      font-size: 0.85rem;
-      padding: 8px 0;
-    }
-    #btnWeatherRefresh {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 6px;
-      padding: 3px 10px;
-      font-size: 0.72rem;
-      cursor: pointer;
-      transition: border-color .2s, color .2s;
-    }
-    #btnWeatherRefresh:hover { border-color: var(--muted); color: var(--text); }
-    #btnWeatherRefresh:disabled { opacity: .4; cursor: default; }
-
-    /* humidity highlight based on level */
-    .hum-low  { color: var(--green); }
-    .hum-mid  { color: var(--yellow); }
-    .hum-high { color: #60a5fa; }
-
-    /* ── Error banner ────────────────────────────────── */
-    #errorBanner {
-      display: none;
-      background: rgba(239,68,68,.12);
-      border: 1px solid rgba(239,68,68,.35);
-      color: #fca5a5;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      margin-bottom: 16px;
-      width: 100%;
-      max-width: 540px;
-    }
-    #errorBanner.show { display: block; }
+    #logPanel li:last-child { border-bottom: none; }
+    .log-ts  { color: var(--muted); min-width: 72px; flex-shrink: 0; }
+    .log-msg { color: var(--sub); }
+    #logPanel li.ok  .log-msg { color: #6ee7b7; }
+    #logPanel li.err .log-msg { color: #fca5a5; }
 
     /* ── Footer ──────────────────────────────────────── */
     footer {
-      margin-top: 8px;
-      font-size: 0.72rem;
-      color: #334155;
+      margin-top: 16px;
+      font-size: 0.68rem;
+      color: var(--muted);
       text-align: center;
+      line-height: 1.8;
     }
   </style>
 </head>
 <body>
 
   <header>
+    <span class="header-icon">⚙️</span>
     <h1>스마트 그레이팅 제어 시스템</h1>
-    <p>Slave HC-05 블루투스 직접 연결 · Web Serial API · 9600 baud</p>
+    <p>Web Serial API &nbsp;·&nbsp; 9600 baud &nbsp;·&nbsp; HC-05 Bluetooth</p>
   </header>
 
   <div id="errorBanner"></div>
 
-  <!-- Weather card -->
+  <!-- 현재 날씨 -->
   <div class="card">
-    <div class="card-title">
+    <div class="section-label">
       <span>현재 날씨</span>
-      <button id="btnWeatherRefresh">새로고침</button>
+      <button id="btnWeatherRefresh">↻ 새로고침</button>
     </div>
     <div id="weatherBody">
-      <div class="weather-loading">📡 위치 정보를 가져오는 중...</div>
+      <div class="weather-loading">📡 위치 정보를 가져오는 중…</div>
     </div>
   </div>
 
-  <!-- Connection card -->
+  <!-- 연결 상태 -->
   <div class="card">
-    <div class="card-title">연결 상태</div>
+    <div class="section-label">연결 상태</div>
     <div class="conn-row">
-      <span id="statusPill"><span class="dot"></span><span id="statusText">연결 안 됨</span></span>
-      <button id="btnConnect"    class="btn btn-primary">HC-05 블루투스 연결</button>
-      <button id="btnDisconnect" class="btn btn-outline" disabled>연결 해제</button>
+      <span id="statusPill">
+        <span class="dot"></span>
+        <span id="statusText">연결 안 됨</span>
+      </span>
+      <button id="btnConnect"    class="btn btn-primary">🔗 HC-05 연결</button>
+      <button id="btnDisconnect" class="btn btn-ghost" disabled>연결 해제</button>
     </div>
   </div>
 
-  <!-- Rain control card -->
+  <!-- 제어 버튼 -->
   <div class="card">
-    <div class="card-title">우수 제어</div>
-    <div class="rain-grid">
-      <button class="rain-btn btn-0" data-cmd="0" disabled>
-        <span class="icon">☀️</span>
-        <span class="label">비 없음</span>
-        <span class="sub">닫힘 (0°)</span>
+    <div class="section-label">제어 버튼</div>
+    <div class="ctrl-grid">
+      <button class="ctrl-btn c0" data-cmd="0" disabled>
+        <span class="c-icon">☀️</span>
+        <span class="c-label">비 없음</span>
+        <span class="c-sub">닫힘 · 0°</span>
       </button>
-      <button class="rain-btn btn-1" data-cmd="1" disabled>
-        <span class="icon">🌦️</span>
-        <span class="label">약한 비</span>
-        <span class="sub">45° 개방</span>
+      <button class="ctrl-btn c1" data-cmd="1" disabled>
+        <span class="c-icon">🌦️</span>
+        <span class="c-label">약한 비</span>
+        <span class="c-sub">개방 · 45°</span>
       </button>
-      <button class="rain-btn btn-2" data-cmd="2" disabled>
-        <span class="icon">⛈️</span>
-        <span class="label">강한 비</span>
-        <span class="sub">90° 개방</span>
+      <button class="ctrl-btn c2" data-cmd="2" disabled>
+        <span class="c-icon">⛈️</span>
+        <span class="c-label">강한 비</span>
+        <span class="c-sub">개방 · 90°</span>
       </button>
     </div>
   </div>
 
-  <!-- Status display card -->
+  <!-- 전송 상태 -->
   <div class="card">
-    <div class="card-title">전송 상태</div>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="val" id="lastSignal">—</div>
-        <div class="lbl">마지막 신호</div>
+    <div class="section-label">전송 상태</div>
+    <div class="stat-grid">
+      <div class="stat-item">
+        <div class="stat-val" id="lastSignal">—</div>
+        <div class="stat-lbl">마지막 신호</div>
       </div>
-      <div class="info-item">
-        <div class="val" id="servoAngle">—</div>
-        <div class="lbl">서보 각도</div>
+      <div class="stat-item">
+        <div class="stat-val" id="servoAngle">—</div>
+        <div class="stat-lbl">서보 각도</div>
       </div>
-      <div class="info-item">
-        <div class="val" id="txStatus">—</div>
-        <div class="lbl">전송 결과</div>
+      <div class="stat-item">
+        <div class="stat-val" id="txStatus">—</div>
+        <div class="stat-lbl">전송 결과</div>
       </div>
     </div>
   </div>
 
-  <!-- Log panel card -->
+  <!-- 명령 로그 -->
   <div class="card">
-    <div class="card-title">명령 로그</div>
+    <div class="section-label">명령 로그</div>
     <ul id="logPanel"></ul>
   </div>
 
-  <footer>Chrome 89 이상 필요 · HTTPS 또는 localhost · Master HC-05 전원 차단 후 Slave HC-05 블루투스 페어링 필요</footer>
+  <footer>
+    Chrome 89 이상 · HTTPS 또는 localhost<br>
+    Master HC-05 전원 차단 후 Slave HC-05 페어링 필요
+  </footer>
 
 <script>
-  /* ════════════════════════════════════════════════════
-     날씨 기능 (Open-Meteo API — API 키 불필요)
-  ════════════════════════════════════════════════════ */
-
+  /* ════════════════════════════════════
+     날씨 (Open-Meteo · API 키 불필요)
+  ════════════════════════════════════ */
   const WMO_DESC = {
-    0:'맑음', 1:'대체로 맑음', 2:'부분적 흐림', 3:'흐림',
-    45:'안개', 48:'서리 안개',
-    51:'가벼운 이슬비', 53:'이슬비', 55:'강한 이슬비',
-    61:'약한 비', 63:'비', 65:'강한 비',
-    71:'약한 눈', 73:'눈', 75:'강한 눈',
-    77:'싸락눈',
-    80:'약한 소나기', 81:'소나기', 82:'강한 소나기',
-    85:'약한 눈 소나기', 86:'강한 눈 소나기',
-    95:'뇌우', 96:'약한 우박 뇌우', 99:'강한 우박 뇌우',
+    0:'맑음',1:'대체로 맑음',2:'부분적 흐림',3:'흐림',
+    45:'안개',48:'서리 안개',
+    51:'가벼운 이슬비',53:'이슬비',55:'강한 이슬비',
+    61:'약한 비',63:'비',65:'강한 비',
+    71:'약한 눈',73:'눈',75:'강한 눈',77:'싸락눈',
+    80:'약한 소나기',81:'소나기',82:'강한 소나기',
+    85:'약한 눈 소나기',86:'강한 눈 소나기',
+    95:'뇌우',96:'약한 우박 뇌우',99:'강한 우박 뇌우',
   };
-
   const WMO_ICON = {
-    0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
-    45:'🌫️', 48:'🌫️',
-    51:'🌦️', 53:'🌦️', 55:'🌧️',
-    61:'🌧️', 63:'🌧️', 65:'🌧️',
-    71:'🌨️', 73:'❄️', 75:'❄️', 77:'🌨️',
-    80:'🌦️', 81:'🌧️', 82:'⛈️',
-    85:'🌨️', 86:'🌨️',
-    95:'⛈️', 96:'⛈️', 99:'⛈️',
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+    45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌦️',55:'🌧️',
+    61:'🌧️',63:'🌧️',65:'🌧️',
+    71:'🌨️',73:'❄️',75:'❄️',77:'🌨️',
+    80:'🌦️',81:'🌧️',82:'⛈️',
+    85:'🌨️',86:'🌨️',
+    95:'⛈️',96:'⛈️',99:'⛈️',
   };
 
-  let weatherRefreshTimer = null;
+  let weatherTimer = null;
 
   async function fetchWeather() {
-    const body    = document.getElementById('weatherBody');
-    const btn     = document.getElementById('btnWeatherRefresh');
-    btn.disabled  = true;
-    body.innerHTML = '<div class="weather-loading">📡 위치 정보를 가져오는 중...</div>';
+    const body = document.getElementById('weatherBody');
+    const btn  = document.getElementById('btnWeatherRefresh');
+    btn.disabled = true;
+    body.innerHTML = '<div class="weather-loading">📡 위치 정보를 가져오는 중…</div>';
 
     let lat, lon, cityName = '현재 위치';
-
     try {
       ({ lat, lon, cityName } = await getLocation());
     } catch (e) {
-      body.innerHTML = `<div class="weather-error">⚠️ 위치 권한이 필요합니다. 브라우저에서 위치 접근을 허용해 주세요.<br><small>${e.message}</small></div>`;
+      body.innerHTML = `<div class="weather-err">⚠️ 위치 권한이 필요합니다. 브라우저에서 위치 접근을 허용해 주세요.<br><small style="opacity:.7">${e.message}</small></div>`;
       btn.disabled = false;
       return;
     }
 
-    body.innerHTML = '<div class="weather-loading">🌐 날씨 데이터를 불러오는 중...</div>';
+    body.innerHTML = '<div class="weather-loading">🌐 날씨 데이터를 불러오는 중…</div>';
 
     try {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-        `&current=temperature_2m,relative_humidity_2m,apparent_temperature,` +
-        `weather_code,wind_speed_10m,wind_direction_10m,surface_pressure,precipitation` +
-        `&wind_speed_unit=ms&timezone=auto`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+        + `&current=temperature_2m,relative_humidity_2m,apparent_temperature,`
+        + `weather_code,wind_speed_10m,surface_pressure,precipitation`
+        + `&wind_speed_unit=ms&timezone=auto`;
 
       const res  = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const c    = data.current;
+      const c    = (await res.json()).current;
 
-      const code    = c.weather_code;
-      const icon    = WMO_ICON[code]  ?? '🌡️';
-      const desc    = WMO_DESC[code]  ?? `코드 ${code}`;
-      const temp    = c.temperature_2m.toFixed(1);
-      const feel    = c.apparent_temperature.toFixed(1);
-      const hum     = c.relative_humidity_2m;
-      const wind    = c.wind_speed_10m.toFixed(1);
-      const press   = c.surface_pressure.toFixed(0);
-      const rain    = c.precipitation.toFixed(1);
-      const now     = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+      const icon  = WMO_ICON[c.weather_code] ?? '🌡️';
+      const desc  = WMO_DESC[c.weather_code] ?? `코드 ${c.weather_code}`;
+      const temp  = c.temperature_2m.toFixed(1);
+      const feel  = c.apparent_temperature.toFixed(1);
+      const hum   = c.relative_humidity_2m;
+      const wind  = c.wind_speed_10m.toFixed(1);
+      const press = c.surface_pressure.toFixed(0);
+      const rain  = c.precipitation.toFixed(1);
+      const now   = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
 
-      const humClass = hum <= 65 ? 'hum-low' : hum < 75 ? 'hum-mid' : 'hum-high';
-      const humHint  = hum <= 65 ? '(닫힘 예상)' : hum < 75 ? '(45° 예상)' : '(90° 예상)';
+      const humCls  = hum <= 65 ? 'hum-low' : hum < 75 ? 'hum-mid' : 'hum-high';
+      const humHint = hum <= 65 ? '닫힘 예상' : hum < 75 ? '45° 예상' : '90° 예상';
 
       body.innerHTML = `
-        <div class="weather-main">
-          <div class="weather-icon">${icon}</div>
-          <div class="weather-primary">
+        <div class="weather-top">
+          <div class="weather-emoji">${icon}</div>
+          <div class="weather-info">
             <div class="weather-temp">${temp}°C</div>
             <div class="weather-desc">${desc} · 체감 ${feel}°C</div>
-            <div class="weather-location">📍 ${escHtml(cityName)}</div>
+            <div class="weather-loc">📍 ${escHtml(cityName)}</div>
           </div>
         </div>
-        <div class="weather-grid">
-          <div class="weather-item">
-            <div class="w-val ${humClass}">${hum}%</div>
-            <div class="w-lbl">습도 ${humHint}</div>
+        <div class="weather-stats">
+          <div class="wstat">
+            <div class="wstat-val ${humCls}">${hum}%</div>
+            <div class="wstat-lbl">습도</div>
+            <div class="wstat-lbl" style="font-size:.58rem;color:inherit;opacity:.8">${humHint}</div>
           </div>
-          <div class="weather-item">
-            <div class="w-val">${wind} m/s</div>
-            <div class="w-lbl">풍속</div>
+          <div class="wstat">
+            <div class="wstat-val">${wind} m/s</div>
+            <div class="wstat-lbl">풍속</div>
           </div>
-          <div class="weather-item">
-            <div class="w-val">${press} hPa</div>
-            <div class="w-lbl">기압</div>
+          <div class="wstat">
+            <div class="wstat-val">${press} hPa</div>
+            <div class="wstat-lbl">기압</div>
           </div>
-          <div class="weather-item">
-            <div class="w-val">${rain} mm</div>
-            <div class="w-lbl">강수량</div>
+          <div class="wstat">
+            <div class="wstat-val">${rain} mm</div>
+            <div class="wstat-lbl">강수량</div>
           </div>
         </div>
-        <div class="weather-updated">마지막 갱신: ${now} · 5분마다 자동 갱신</div>`;
-
+        <div class="weather-foot">갱신: ${now} · 5분마다 자동 갱신</div>`;
     } catch (e) {
-      body.innerHTML = `<div class="weather-error">⚠️ 날씨 데이터를 불러오지 못했습니다.<br><small>${e.message}</small></div>`;
+      body.innerHTML = `<div class="weather-err">⚠️ 날씨 데이터를 불러오지 못했습니다.<br><small style="opacity:.7">${e.message}</small></div>`;
     }
 
     btn.disabled = false;
-
-    // 5분마다 자동 갱신
-    clearTimeout(weatherRefreshTimer);
-    weatherRefreshTimer = setTimeout(fetchWeather, 5 * 60 * 1000);
+    clearTimeout(weatherTimer);
+    weatherTimer = setTimeout(fetchWeather, 5 * 60 * 1000);
   }
 
   function getLocation() {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        reject(new Error('이 브라우저는 위치 정보를 지원하지 않습니다.'));
+        reject(new Error('위치 정보 미지원 브라우저'));
         return;
       }
       navigator.geolocation.getCurrentPosition(
         async pos => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
+          const { latitude: lat, longitude: lon } = pos.coords;
           let cityName = `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
           try {
-            const r = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ko`
-            );
-            const d = await r.json();
-            const a = d.address;
+            const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ko`);
+            const a = (await r.json()).address;
             cityName = a.city || a.town || a.village || a.county || cityName;
-          } catch (_) { /* 역지오코딩 실패 시 좌표 표시 */ }
+          } catch (_) {}
           resolve({ lat, lon, cityName });
         },
         err => reject(new Error(err.message)),
@@ -592,20 +624,16 @@
   }
 
   document.getElementById('btnWeatherRefresh').addEventListener('click', fetchWeather);
-
-  // 페이지 로드 시 날씨 자동 조회
   fetchWeather();
 
 
-  /* ════════════════════════════════════════════════════
-     시리얼 제어 기능
-  ════════════════════════════════════════════════════ */
-
-  let port   = null;
-  let writer = null;
+  /* ════════════════════════════════════
+     시리얼 제어
+  ════════════════════════════════════ */
+  let port = null, writer = null;
 
   const COMMANDS = {
-    '0': { label: '"0" — 비 없음',  angle: '0°  (닫힘)' },
+    '0': { label: '"0" — 비 없음', angle: '0° (닫힘)' },
     '1': { label: '"1" — 약한 비', angle: '45° (개방)' },
     '2': { label: '"2" — 강한 비', angle: '90° (개방)' },
   };
@@ -619,25 +647,21 @@
   const txStatus      = document.getElementById('txStatus');
   const logPanel      = document.getElementById('logPanel');
   const errorBanner   = document.getElementById('errorBanner');
-  const rainBtns      = document.querySelectorAll('.rain-btn');
+  const ctrlBtns      = document.querySelectorAll('.ctrl-btn');
 
   if (!('serial' in navigator)) {
-    showError(
-      '⚠️ 이 브라우저는 Web Serial API를 지원하지 않습니다. ' +
-      'HTTPS 또는 localhost 환경의 Chrome 89 이상(데스크톱)을 사용해 주세요. ' +
-      'Slave HC-05가 블루투스로 페어링되어 있어야 COM 포트가 표시됩니다.'
-    );
+    showError('⚠️ Web Serial API를 지원하지 않는 브라우저입니다. HTTPS 환경의 Chrome 89 이상(데스크톱)을 사용해 주세요.');
     btnConnect.disabled = true;
   }
 
   btnConnect.addEventListener('click', async () => {
     hideError();
     try {
-      port = await navigator.serial.requestPort();
+      port   = await navigator.serial.requestPort();
       await port.open({ baudRate: 9600 });
       writer = port.writable.getWriter();
       setConnected(true);
-      addLog('ok', '시리얼 포트 열림 (9600 baud).');
+      addLog('ok', '포트 열림 · 9600 baud');
     } catch (err) {
       port = null; writer = null;
       if (err.name !== 'NotFoundError') {
@@ -647,26 +671,24 @@
     }
   });
 
-  btnDisconnect.addEventListener('click', async () => { await doDisconnect(); });
+  btnDisconnect.addEventListener('click', () => doDisconnect());
 
   async function doDisconnect() {
     try {
       if (writer) { writer.releaseLock(); writer = null; }
-      if (port)   { await port.close();  port   = null; }
+      if (port)   { await port.close();   port   = null; }
     } catch (_) {}
     setConnected(false);
-    addLog('', '시리얼 포트 연결 해제됨.');
+    addLog('', '연결 해제됨');
     txStatus.textContent = '—';
     txStatus.className   = '';
   }
 
-  rainBtns.forEach(btn => {
-    btn.addEventListener('click', async () => {
-      await sendCommand(btn.dataset.cmd, btn);
-    });
+  ctrlBtns.forEach(btn => {
+    btn.addEventListener('click', () => sendCommand(btn.dataset.cmd, btn));
   });
 
-  async function sendCommand(cmd, btnEl) {
+  async function sendCommand(cmd, el) {
     if (!writer) return;
     try {
       await writer.write(new TextEncoder().encode(cmd));
@@ -675,9 +697,9 @@
       txStatus.textContent   = '전송 완료 ✓';
       txStatus.className     = '';
       addLog('ok', `"${cmd}" 전송 → ${COMMANDS[cmd].angle}`);
-      btnEl.classList.remove('active-flash');
-      void btnEl.offsetWidth;
-      btnEl.classList.add('active-flash');
+      el.classList.remove('flash');
+      void el.offsetWidth;
+      el.classList.add('flash');
     } catch (err) {
       txStatus.textContent = '전송 실패 ✗';
       txStatus.className   = 'error';
@@ -693,40 +715,34 @@
       statusText.textContent = '연결됨';
       btnConnect.disabled    = true;
       btnDisconnect.disabled = false;
-      rainBtns.forEach(b => b.disabled = false);
+      ctrlBtns.forEach(b => b.disabled = false);
     } else {
       statusPill.classList.remove('connected');
       statusText.textContent = '연결 안 됨';
       btnConnect.disabled    = false;
       btnDisconnect.disabled = true;
-      rainBtns.forEach(b => b.disabled = true);
+      ctrlBtns.forEach(b => b.disabled = true);
     }
   }
 
   function addLog(type, msg) {
-    const ts = new Date().toTimeString().slice(0, 8);
+    const ts = new Date().toTimeString().slice(0,8);
     const li = document.createElement('li');
     if (type) li.classList.add(type);
-    li.innerHTML = `<span class="ts">${ts}</span><span class="msg">${escHtml(msg)}</span>`;
+    li.innerHTML = `<span class="log-ts">${ts}</span><span class="log-msg">${escHtml(msg)}</span>`;
     logPanel.prepend(li);
     while (logPanel.children.length > 60) logPanel.removeChild(logPanel.lastChild);
   }
 
-  function showError(msg) {
-    errorBanner.textContent = msg;
-    errorBanner.classList.add('show');
-  }
-  function hideError() { errorBanner.classList.remove('show'); }
+  function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('show'); }
+  function hideError()    { errorBanner.classList.remove('show'); }
+  function escHtml(s)     { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  navigator.serial?.addEventListener('disconnect', async (e) => {
+  navigator.serial?.addEventListener('disconnect', async e => {
     if (port && e.target === port) {
       await doDisconnect();
-      showError('시리얼 장치가 예기치 않게 연결 해제되었습니다.');
-      addLog('err', '장치 연결이 예기치 않게 끊겼습니다.');
+      showError('장치 연결이 끊어졌습니다.');
+      addLog('err', '장치 연결 끊김');
     }
   });
 </script>
