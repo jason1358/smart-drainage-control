@@ -1217,18 +1217,6 @@
   <!-- ══════════ 시연 영상 페이지 ══════════ -->
   <div id="pageVideo" class="page hidden-right">
 
-    <!-- ✏️ 영상 추가 방법 안내 카드 -->
-    <div class="video-card">
-      <div class="section-label">영상 추가 방법</div>
-      <div class="video-guide">
-        <strong>① YouTube 영상</strong><br>
-        아래 영상 카드의 <code>YOUR_YOUTUBE_ID</code>를 유튜브 영상 ID로 교체하세요.<br>
-        예) <code>https://youtu.be/<strong>dQw4w9WgXcQ</strong></code> → ID는 <code>dQw4w9WgXcQ</code><br><br>
-        <strong>② 직접 업로드 영상 (.mp4)</strong><br>
-        GitHub 저장소에 영상 파일을 올린 후 <code>&lt;video&gt;</code> 태그의 <code>src</code>를 파일 경로로 바꾸세요.
-      </div>
-    </div>
-
     <!-- ✏️ 영상 카드 1 — YouTube 임베드 -->
     <!-- 🔧 수정: YOUR_YOUTUBE_ID_1 을 실제 유튜브 영상 ID로 교체하세요 -->
     <div class="video-card">
@@ -1240,43 +1228,23 @@
       </div>
     </div>
 
-    <!-- ✏️ 영상 카드 2 — YouTube 임베드 -->
-    <!-- 🔧 수정: YOUR_YOUTUBE_ID_2 를 실제 유튜브 영상 ID로 교체하세요 -->
+    <!-- 영상 카드 2 -->
     <div class="video-card">
       <div class="section-label">시연 영상 2</div>
-      <div class="video-label">웹 페이지 수동 제어</div>
-      <div class="video-desc">웹 페이지에서 버튼을 눌러 서보모터를 직접 제어하는 시연 영상입니다.</div>
-      <div class="video-embed" id="videoWrap2">
-        <div class="video-placeholder">
-          <span class="ph-icon">🎬</span>
-          <span class="ph-text">영상을 추가하려면<br>아래 코드를 참고하세요</span>
-          <span class="ph-hint">&lt;iframe src="https://www.youtube.com/embed/YOUR_ID"&gt;</span>
-        </div>
-        <!-- ▼ YouTube 임베드 예시 (주석 해제 후 ID 교체)
-        <iframe
-          src="https://www.youtube.com/embed/YOUR_YOUTUBE_ID_2"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
-        -->
+      <div class="video-label">온습도 센서 기반 강수 예측 제어</div>
+      <div class="video-desc">BME280 온습도 센서로 측정한 습도값을 기반으로 강수를 예측하여 그레이팅을 자동 제어하는 시연 영상입니다.</div>
+      <div class="video-embed">
+        <video src="videos/260610_test_by_humidity.mp4" controls></video>
       </div>
     </div>
 
-    <!-- ✏️ 영상 카드 3 — 로컬 mp4 파일 예시 -->
-    <!-- 🔧 수정: videos/demo.mp4 를 실제 파일 경로로 교체하세요 -->
+    <!-- 영상 카드 3 -->
     <div class="video-card">
       <div class="section-label">시연 영상 3</div>
-      <div class="video-label">추가 시연</div>
-      <div class="video-desc">추가 시연 영상입니다. 필요 없으면 이 카드 전체를 삭제하세요.</div>
-      <div class="video-embed" id="videoWrap3">
-        <div class="video-placeholder">
-          <span class="ph-icon">🎬</span>
-          <span class="ph-text">영상을 추가하려면<br>아래 코드를 참고하세요</span>
-          <span class="ph-hint">&lt;video src="videos/파일명.mp4" controls&gt;</span>
-        </div>
-        <!-- ▼ 로컬 mp4 파일 예시 (주석 해제 후 경로 교체)
-        <video src="videos/demo3.mp4" controls></video>
-        -->
+      <div class="video-label">로드셀 센서 기반 빗물 감지 강제 개방 제어</div>
+      <div class="video-desc">로드셀 센서로 빗물의 무게를 감지하여 그레이팅을 강제 개방하는 시연 영상입니다.</div>
+      <div class="video-embed">
+        <video src="videos/260610_test_by_loadcell.mp4" controls></video>
       </div>
     </div>
 
